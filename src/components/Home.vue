@@ -23,7 +23,7 @@
               <i class="el-icon-s-flag"></i>
               <span slot="title">研究方向管理</span>
             </el-menu-item>
-            <el-menu-item index="/news">
+            <el-menu-item index="/homenews">
               <i class="el-icon-news"></i>
               <span slot="title">首页新闻管理</span>
             </el-menu-item>

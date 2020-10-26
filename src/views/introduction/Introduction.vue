@@ -3,16 +3,16 @@
     <!--面包屑导航-->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item><a href="/#/project">项目管理</a></el-breadcrumb-item>
+      <el-breadcrumb-item><a href="/#/introduction">介绍管理</a></el-breadcrumb-item>
     </el-breadcrumb>
     <!--Card-->
     <el-card class="box-card">
       <!--列表上方-->
       <div slot="header" class="clearfix">
-        <span>项目管理</span>
+        <span>介绍管理</span>
         <el-input v-model="searchContent" style="width: 15%;margin-left: 1%" placeholder="请输入内容"></el-input>
         <el-button @click="handleSearch(searchContent)" style="margin-left: 1%">检索</el-button>
-        <el-button style="float: right" @click="showInsertDialog">添加新项目</el-button>
+        <el-button style="float: right" @click="showInsertDialog">添加简介</el-button>
       </div>
       <!--列表-->
       <div class="text item">
@@ -28,46 +28,20 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="项目名称"
+              label="内容"
               width="180">
               <template slot-scope="scope">
-                <span>{{scope.row.name}}</span>
+                <el-tooltip class="item" effect="dark" :content="scope.row.content" placement="top">
+                  <span>查看简介</span>
+                </el-tooltip>
               </template>
             </el-table-column>
             <el-table-column
-              label="负责人"
-              width="180">
-              <template slot-scope="scope">
-                <span>{{scope.row.manager}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="项目号"
-              width="180">
-              <template slot-scope="scope">
-                <span>{{scope.row.number}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="开始时间"
-              width="180">
-              <template slot-scope="scope">
-                <span>{{scope.row.start}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="结束时间"
-              width="180">
-              <template slot-scope="scope">
-                <span>{{scope.row.start}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="是否完成"
+              label="是否展示"
               width="180">
               <template slot-scope="scope">
                 <el-switch
-                  v-model="scope.row.status"
+                  v-model="scope.row.isShow"
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   @change="tbStatusChange(scope.row)">
@@ -79,7 +53,7 @@
               width="180">
               <template slot-scope="scope">
                 <el-switch
-                  v-model="scope.row.isShow"
+                  v-model="scope.row.isShowOnHome"
                   active-color="#13ce66"
                   inactive-color="#ff4949"
                   @change="tbStatusChange(scope.row)">
@@ -116,20 +90,8 @@
         <el-form-item label="ID" >
           <el-input  v-model="editDialog.id" :disabled="true"></el-input>
         </el-form-item>
-        <el-form-item label="姓名" >
-          <el-input  v-model="editDialog.name"></el-input>
-        </el-form-item>
-        <el-form-item label="负责人" >
-          <el-input  v-model="editDialog.manager"></el-input>
-        </el-form-item>
-        <el-form-item label="项目号" >
-          <el-input  v-model="editDialog.number"></el-input>
-        </el-form-item>
-        <el-form-item label="开始时间" >
-          <el-input  v-model="editDialog.start"></el-input>
-        </el-form-item>
-        <el-form-item label="结束时间" >
-          <el-input  v-model="editDialog.end"></el-input>
+        <el-form-item label="内容" >
+          <el-input  v-model="editDialog.content" type="textarea"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -140,32 +102,21 @@
     <!--添加成员Dialog-->
     <el-dialog title="添加项目" :visible.sync="addDialogFormVisible">
       <el-form :model="addDialog" ref="insertFormRef">
-        <el-form-item label="姓名" >
-          <el-input  v-model="addDialog.name"></el-input>
-        </el-form-item>
-        <el-form-item label="负责人" >
-          <el-input  v-model="addDialog.manager"></el-input>
-        </el-form-item>
-        <el-form-item label="项目号" >
-          <el-input  v-model="addDialog.number"></el-input>
-        </el-form-item>
-        <el-form-item label="开始时间" >
-          <el-input  v-model="addDialog.start"></el-input>
-        </el-form-item>
-        <el-form-item label="结束时间" >
-          <el-input  v-model="addDialog.end"></el-input>
-        </el-form-item>
-        <el-form-item label="是否完成" >
-          <el-switch
-            v-model="addDialog.isLeader"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            name="is_show">
-          </el-switch>
+        <el-form-item label="内容" >
+          <el-input  v-model="addDialog.content" type="textarea"></el-input>
         </el-form-item>
         <el-form-item label="是否展示" >
           <el-switch
             v-model="addDialog.isShow"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+            name="is_leader">
+          </el-switch>
+        </el-form-item>
+
+        <el-form-item label="是否展示在主页" >
+          <el-switch
+            v-model="addDialog.isShowOnHoem"
             active-color="#13ce66"
             inactive-color="#ff4949"
             name="is_leader">
@@ -182,17 +133,17 @@
 
 <script>
 export default {
-  name: 'Project',
+  name: 'Introduction',
   data () {
     return {
       searchContent: '',
       pageCnt: 0,
       tbData: [],
       editDialog: {
-        id: '', name: '', manager: '', number: '', start: '', end: ''
+        id: '', content: ''
       },
       addDialog: {
-        name: '', manager: '', number: '', start: '', end: '', isShow: true, status: false
+        content: '', isShow: true, isShowOnHome: false
       },
       addDialogFormVisible: false,
       editDialogFormVisible: false
@@ -210,7 +161,7 @@ export default {
       this.editDialog = row
     },
     handleDelete (index, row) {
-      this.$http.delete('/project/' + row.id).then(res => {
+      this.$http.delete('/introduction/' + row.id).then(res => {
         if (res.data.code === 200) {
           this.$message.success('删除成功')
           this.getTbList()
@@ -224,7 +175,7 @@ export default {
     },
     handlerEdit (editFormData) {
       const param = JSON.stringify(editFormData)
-      this.$http.put('/project/' + editFormData.id, param, { headers: { 'Content-Type': 'application/json' } }).then(res => {
+      this.$http.put('/introduction/' + editFormData.id, param, { headers: { 'Content-Type': 'application/json' } }).then(res => {
         if (res.data.code === 200) {
           this.$message.success('修改成功')
         } else {
@@ -236,7 +187,7 @@ export default {
     },
     handlerAdd (addFormData) {
       const param = JSON.stringify(addFormData)
-      this.$http.post('/project/insert', param, { headers: { 'Content-Type': 'application/json' } }).then(res => {
+      this.$http.post('/introduction/insert', param, { headers: { 'Content-Type': 'application/json' } }).then(res => {
         if (res.data.code === 200) {
           this.getTbList()
           this.$message.success('修改成功')
@@ -250,7 +201,7 @@ export default {
       this.getTbList('', page)
     },
     tbStatusChange (row) {
-      this.$http.put('/project/' + row.id, { isShow: row.isShow, status: row.status }).then(res => {
+      this.$http.put('/introduction/' + row.id, { isShow: row.isShow, status: row.status }).then(res => {
         if (res.data.code === 200) {
           console.log(row)
           this.$message.success('修改成功')
@@ -265,7 +216,7 @@ export default {
     },
     getTbList (keyword = '', pageNum = 1) {
       if (keyword === '') {
-        this.$http.get('/project/get/all?pageNum=' + pageNum).then(res => {
+        this.$http.get('/introduction/get/all?pageNum=' + pageNum).then(res => {
           const cbInfo = res.data.data
           if (res.data.code === 200) {
             const { list } = cbInfo
@@ -275,7 +226,7 @@ export default {
           }
         })
       } else {
-        this.$http.get('/project/get/keyword?keyword=' + keyword + '&pageNum=' + pageNum).then(res => {
+        this.$http.get('/introduction/get/keyword?keyword=' + keyword + '&pageNum=' + pageNum).then(res => {
           const cbInfo = res.data.data
           if (res.data.code === 200) {
             const { list } = cbInfo

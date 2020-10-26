@@ -5,9 +5,8 @@ import './plugins/element.js'
 import axios from 'axios'
 import { Message } from 'element-ui'
 axios.defaults.baseURL = 'http://localhost:8300'
-Vue.prototype.$http = axios.create({
-  withCredentials: false
-})
+axios.defaults.withCredentials = true
+Vue.prototype.$http = axios
 Vue.prototype.$message = Message
 
 Vue.config.productionTip = false

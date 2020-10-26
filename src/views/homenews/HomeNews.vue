@@ -3,7 +3,7 @@
     <!--面包屑导航-->
     <el-breadcrumb separator="/">
       <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item><a href="/#/project">项目管理</a></el-breadcrumb-item>
+      <el-breadcrumb-item><a href="/#/homenews">首页新闻管理</a></el-breadcrumb-item>
     </el-breadcrumb>
     <!--Card-->
     <el-card class="box-card">
@@ -12,7 +12,7 @@
         <span>项目管理</span>
         <el-input v-model="searchContent" style="width: 15%;margin-left: 1%" placeholder="请输入内容"></el-input>
         <el-button @click="handleSearch(searchContent)" style="margin-left: 1%">检索</el-button>
-        <el-button style="float: right" @click="showInsertDialog">添加新项目</el-button>
+        <el-button style="float: right" @click="showInsertDialog">添加新闻</el-button>
       </div>
       <!--列表-->
       <div class="text item">
@@ -28,50 +28,10 @@
               </template>
             </el-table-column>
             <el-table-column
-              label="项目名称"
+              label="新闻名称"
               width="180">
               <template slot-scope="scope">
                 <span>{{scope.row.name}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="负责人"
-              width="180">
-              <template slot-scope="scope">
-                <span>{{scope.row.manager}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="项目号"
-              width="180">
-              <template slot-scope="scope">
-                <span>{{scope.row.number}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="开始时间"
-              width="180">
-              <template slot-scope="scope">
-                <span>{{scope.row.start}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="结束时间"
-              width="180">
-              <template slot-scope="scope">
-                <span>{{scope.row.start}}</span>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="是否完成"
-              width="180">
-              <template slot-scope="scope">
-                <el-switch
-                  v-model="scope.row.status"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  @change="tbStatusChange(scope.row)">
-                </el-switch>
               </template>
             </el-table-column>
             <el-table-column
@@ -119,18 +79,6 @@
         <el-form-item label="姓名" >
           <el-input  v-model="editDialog.name"></el-input>
         </el-form-item>
-        <el-form-item label="负责人" >
-          <el-input  v-model="editDialog.manager"></el-input>
-        </el-form-item>
-        <el-form-item label="项目号" >
-          <el-input  v-model="editDialog.number"></el-input>
-        </el-form-item>
-        <el-form-item label="开始时间" >
-          <el-input  v-model="editDialog.start"></el-input>
-        </el-form-item>
-        <el-form-item label="结束时间" >
-          <el-input  v-model="editDialog.end"></el-input>
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -140,28 +88,8 @@
     <!--添加成员Dialog-->
     <el-dialog title="添加项目" :visible.sync="addDialogFormVisible">
       <el-form :model="addDialog" ref="insertFormRef">
-        <el-form-item label="姓名" >
+        <el-form-item label="标题" >
           <el-input  v-model="addDialog.name"></el-input>
-        </el-form-item>
-        <el-form-item label="负责人" >
-          <el-input  v-model="addDialog.manager"></el-input>
-        </el-form-item>
-        <el-form-item label="项目号" >
-          <el-input  v-model="addDialog.number"></el-input>
-        </el-form-item>
-        <el-form-item label="开始时间" >
-          <el-input  v-model="addDialog.start"></el-input>
-        </el-form-item>
-        <el-form-item label="结束时间" >
-          <el-input  v-model="addDialog.end"></el-input>
-        </el-form-item>
-        <el-form-item label="是否完成" >
-          <el-switch
-            v-model="addDialog.isLeader"
-            active-color="#13ce66"
-            inactive-color="#ff4949"
-            name="is_show">
-          </el-switch>
         </el-form-item>
         <el-form-item label="是否展示" >
           <el-switch
@@ -182,17 +110,17 @@
 
 <script>
 export default {
-  name: 'Project',
+  name: 'HomeNews',
   data () {
     return {
       searchContent: '',
       pageCnt: 0,
       tbData: [],
       editDialog: {
-        id: '', name: '', manager: '', number: '', start: '', end: ''
+        id: '', name: ''
       },
       addDialog: {
-        name: '', manager: '', number: '', start: '', end: '', isShow: true, status: false
+        name: '', isShow: true
       },
       addDialogFormVisible: false,
       editDialogFormVisible: false
@@ -210,7 +138,7 @@ export default {
       this.editDialog = row
     },
     handleDelete (index, row) {
-      this.$http.delete('/project/' + row.id).then(res => {
+      this.$http.delete('/homenews/' + row.id).then(res => {
         if (res.data.code === 200) {
           this.$message.success('删除成功')
           this.getTbList()
@@ -224,7 +152,7 @@ export default {
     },
     handlerEdit (editFormData) {
       const param = JSON.stringify(editFormData)
-      this.$http.put('/project/' + editFormData.id, param, { headers: { 'Content-Type': 'application/json' } }).then(res => {
+      this.$http.put('/homenews/' + editFormData.id, param, { headers: { 'Content-Type': 'application/json' } }).then(res => {
         if (res.data.code === 200) {
           this.$message.success('修改成功')
         } else {
@@ -236,7 +164,7 @@ export default {
     },
     handlerAdd (addFormData) {
       const param = JSON.stringify(addFormData)
-      this.$http.post('/project/insert', param, { headers: { 'Content-Type': 'application/json' } }).then(res => {
+      this.$http.post('/homenews/insert', param, { headers: { 'Content-Type': 'application/json' } }).then(res => {
         if (res.data.code === 200) {
           this.getTbList()
           this.$message.success('修改成功')
@@ -250,7 +178,7 @@ export default {
       this.getTbList('', page)
     },
     tbStatusChange (row) {
-      this.$http.put('/project/' + row.id, { isShow: row.isShow, status: row.status }).then(res => {
+      this.$http.put('/homenews/' + row.id, { isShow: row.isShow, status: row.status }).then(res => {
         if (res.data.code === 200) {
           console.log(row)
           this.$message.success('修改成功')
@@ -265,7 +193,7 @@ export default {
     },
     getTbList (keyword = '', pageNum = 1) {
       if (keyword === '') {
-        this.$http.get('/project/get/all?pageNum=' + pageNum).then(res => {
+        this.$http.get('/homenews/get/all?pageNum=' + pageNum).then(res => {
           const cbInfo = res.data.data
           if (res.data.code === 200) {
             const { list } = cbInfo
@@ -275,7 +203,7 @@ export default {
           }
         })
       } else {
-        this.$http.get('/project/get/keyword?keyword=' + keyword + '&pageNum=' + pageNum).then(res => {
+        this.$http.get('/homenews/get/keyword?keyword=' + keyword + '&pageNum=' + pageNum).then(res => {
           const cbInfo = res.data.data
           if (res.data.code === 200) {
             const { list } = cbInfo

@@ -5,9 +5,9 @@ import Home from '@/components/Home'
 import DashBoard from '@/views/dashborad/DashBoard'
 import Member from '@/views/member/Member'
 import Project from '@/views/project/Project'
-/* import Direction from '@/views/direcrion/Direction'
+import Direction from '@/views/direction/Direction'
 import HomeNews from '@/views/homenews/HomeNews'
-import Introduction from '@/views/introdction/Introduction' */
+import Introduction from '@/views/introduction/Introduction'
 
 Vue.use(VueRouter)
 
@@ -22,10 +22,10 @@ const routes = [
     children: [
       { path: '/dashboard', name: 'DashBoard', component: DashBoard },
       { path: '/member', name: 'Member', component: Member },
-      { path: '/project', name: 'Project', component: Project }
-      /* { path: '/direction', name: 'Direction', component: Direction },
+      { path: '/project', name: 'Project', component: Project },
+      { path: '/direction', name: 'Direction', component: Direction },
       { path: '/homenews', name: 'HomeNews', component: HomeNews },
-      { path: '/introduction', name: 'Introduction', component: Introduction } */
+      { path: '/introduction', name: 'Introduction', component: Introduction }
     ]
   }
 ]
