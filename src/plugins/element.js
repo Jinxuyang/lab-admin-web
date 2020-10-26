@@ -23,7 +23,8 @@ import {
   Dialog,
   Option,
   Select,
-  Pagination
+  Pagination,
+  Upload
 } from 'element-ui'
 
 Vue.use(Input)
@@ -51,3 +52,4 @@ Vue.use(Dialog)
 Vue.use(Select)
 Vue.use(Option)
 Vue.use(Pagination)
+Vue.use(Upload)

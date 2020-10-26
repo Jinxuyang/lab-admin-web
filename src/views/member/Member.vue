@@ -120,6 +120,19 @@
       <el-form-item label="姓名" >
         <el-input v-model="addMember.name" name="name" ></el-input>
       </el-form-item>
+      <el-upload
+        drag
+        class="upload-demo"
+        action="http://localhost:8300/member/insert/photo"
+        name="img"
+        :show-file-list="false"
+        :on-success="handleAvatarSuccess"
+        :before-upload="beforeAvatarUpload">
+        <img v-if="imageUrl" :src="imageUrl" class="avatar">
+        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
+      </el-upload>
       <el-form-item label="职位" >
         <el-input v-model="addMember.position" name="position" ></el-input>
       </el-form-item>
@@ -156,6 +169,7 @@ export default {
   name: 'Member',
   data () {
     return {
+      imageUrl: '',
       searchContent: '',
       pageCnt: 0,
       memberData: [],
@@ -163,7 +177,7 @@ export default {
         id: '', name: '', position: '', introduction: ''
       },
       addMember: {
-        name: '', position: '', introduction: '', isShow: true, isLeader: false
+        name: '', position: '', introduction: '', isShow: true, isLeader: false, photo: ''
       },
       addDialogFormVisible: false,
       editDialogFormVisible: false
@@ -255,6 +269,30 @@ export default {
           }
         })
       }
+    },
+    handleAvatarSuccess (res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+      const { code } = res
+      if (code === 200) {
+        this.$message.success('上传成功')
+      } else {
+        this.$message.error('上传失败，请重新上传')
+      }
+      const { data: url } = res
+      console.log(res)
+      this.addMember.photo = url
+    },
+    beforeAvatarUpload (file) {
+      const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M
     }
   }
 
@@ -281,5 +319,28 @@ export default {
 
 .box-card {
   margin-top: 1.2%;
+}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>
