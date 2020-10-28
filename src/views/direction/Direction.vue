@@ -103,6 +103,20 @@
         <el-form-item label="姓名" >
           <el-input  v-model="addDialog.name"></el-input>
         </el-form-item>
+        <el-form-item label="图片">
+          <el-upload
+            ref="upload"
+            name="img"
+            action="http://localhost:8300/direction/insert/photo"
+            :on-success="handleSuccess"
+            :on-error="handleError"
+            :file-list="fileList"
+            :auto-upload="false">
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
         <el-form-item label="简介" >
           <el-input  v-model="addDialog.introduction" type="textarea"></el-input>
         </el-form-item>
@@ -117,7 +131,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="handlerAdd(addDialog)">确 定</el-button>
+        <el-button type="primary" @click="handlerAdd(addDialog, fileList)">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -128,6 +142,8 @@ export default {
   name: 'Direction',
   data () {
     return {
+      urlList: [],
+      fileList: [],
       searchContent: '',
       pageCnt: 0,
       tbData: [],
@@ -135,7 +151,7 @@ export default {
         id: '', name: '', introduction: ''
       },
       addDialog: {
-        name: '', manager: '', introduction: '', isShow: true
+        name: '', introduction: '', isShow: true, photos: []
       },
       addDialogFormVisible: false,
       editDialogFormVisible: false
@@ -149,7 +165,9 @@ export default {
       this.getTbList(searchContent)
     },
     showEditDialog (index, row) {
+      console.log(this.fileList)
       this.editDialogFormVisible = !this.editDialogFormVisible
+      if (this.isUploadSuccess) this.fileList = []
       this.editDialog = row
     },
     handleDelete (index, row) {
@@ -183,6 +201,7 @@ export default {
         if (res.data.code === 200) {
           this.getTbList()
           this.$message.success('修改成功')
+          this.urlList = []
         } else {
           this.$message.error('修改失败')
         }
@@ -228,9 +247,22 @@ export default {
           }
         })
       }
+    },
+    submitUpload () {
+      this.$refs.upload.submit()
+    },
+    handleSuccess (response) {
+      this.$message.success('上传成功')
+      this.urlList.push(response.data)
+      this.addDialog.photos = this.urlList
+      console.log(this.urlList)
+      console.log(this.addDialog)
+    },
+    handleError (err) {
+      this.$message.success('上传失败')
+      console.log(err)
     }
   }
-
 }
 </script>
 

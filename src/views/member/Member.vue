@@ -18,28 +18,35 @@
           style="width: 100%">
           <el-table-column
             label="id"
-            width="180">
+            width="40">
             <template slot-scope="scope">
               <span>{{ scope.row.id }}</span>
             </template>
           </el-table-column>
           <el-table-column
+          label="照片"
+          width="120">
+            <template slot-scope="scope">
+              <img :src="scope.row.photo" width="100px" height="100px">
+            </template>
+          </el-table-column>
+          <el-table-column
             label="姓名"
-            width="180">
+            width="100">
             <template slot-scope="scope">
               <span>{{scope.row.name}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="职位"
-            width="180">
+            width="100">
             <template slot-scope="scope">
               <span>{{scope.row.position}}</span>
             </template>
           </el-table-column>
           <el-table-column
             label="个人介绍"
-            width="180">
+            width="100">
             <template slot-scope="scope">
               <el-tooltip class="item" effect="dark" :content="scope.row.introduction" placement="top">
                 <span>查看简介</span>
@@ -48,7 +55,7 @@
           </el-table-column>
           <el-table-column
             label="是否展示"
-            width="180">
+            width="100">
             <template slot-scope="scope">
               {{scope.row.is_show}}
               <el-switch
@@ -61,7 +68,7 @@
           </el-table-column>
           <el-table-column
             label="是否为实验室带头人"
-            width="180">
+            width="100">
             <template slot-scope="scope">
               <el-switch
                 v-model="scope.row.isLeader"
@@ -102,6 +109,19 @@
       <el-form-item label="姓名" >
         <el-input  v-model="editMember.name"></el-input>
       </el-form-item>
+      <el-form-item label="照片">
+        <br>
+        <el-upload
+          class="avatar-uploader"
+          action="http://localhost:8300/member/insert/photo"
+          name="img"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="editMember.photo" :src="editMember.photo" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
       <el-form-item label="职位" >
         <el-input  v-model="editMember.position"></el-input>
       </el-form-item>
@@ -120,19 +140,19 @@
       <el-form-item label="姓名" >
         <el-input v-model="addMember.name" name="name" ></el-input>
       </el-form-item>
-      <el-upload
-        drag
-        class="upload-demo"
-        action="http://localhost:8300/member/insert/photo"
-        name="img"
-        :show-file-list="false"
-        :on-success="handleAvatarSuccess"
-        :before-upload="beforeAvatarUpload">
-        <img v-if="imageUrl" :src="imageUrl" class="avatar">
-        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-        <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-      </el-upload>
+      <el-form-item label="照片">
+        <br>
+        <el-upload
+          class="avatar-uploader"
+          action="http://localhost:8300/member/insert/photo"
+          name="img"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+      </el-form-item>
       <el-form-item label="职位" >
         <el-input v-model="addMember.position" name="position" ></el-input>
       </el-form-item>
@@ -174,7 +194,7 @@ export default {
       pageCnt: 0,
       memberData: [],
       editMember: {
-        id: '', name: '', position: '', introduction: ''
+        id: '', name: '', position: '', introduction: '', photo: ''
       },
       addMember: {
         name: '', position: '', introduction: '', isShow: true, isLeader: false, photo: ''
@@ -279,8 +299,8 @@ export default {
         this.$message.error('上传失败，请重新上传')
       }
       const { data: url } = res
-      console.log(res)
       this.addMember.photo = url
+      this.editMember.photo = url
     },
     beforeAvatarUpload (file) {
       const isJPG = file.type === 'image/jpeg'
