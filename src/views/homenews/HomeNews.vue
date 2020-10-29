@@ -35,6 +35,18 @@
               </template>
             </el-table-column>
             <el-table-column
+              label="图片"
+              width="180">
+              <template slot-scope="scope">
+                <img class="el-icon-download" :src="scope.row.photo" width="100px" height="100px">
+              </template>
+            </el-table-column>
+            <el-table-column label="文件" width="180">
+              <template slot-scope="scope">
+                <a :href="scope.row.url"><i class="el-icon-download"></i></a>
+              </template>
+            </el-table-column>
+            <el-table-column
               label="是否展示"
               width="180">
               <template slot-scope="scope">
@@ -79,6 +91,29 @@
         <el-form-item label="姓名" >
           <el-input  v-model="editDialog.name"></el-input>
         </el-form-item>
+        <el-form-item label="上传照片">
+          <br>
+          <el-upload
+            name="img"
+            class="avatar-uploader"
+            action="http://localhost:8300/homenews/image"
+            :show-file-list="false"
+            :on-success="handleAvatarSuccess">
+            <img v-if="imageUrl" :src="imageUrl" class="avatar">
+            <img v-else class="el-icon-plus avatar-uploader-icon">
+          </el-upload>
+        </el-form-item>
+        <el-form-item label="上传文件">
+          <br>
+          <el-upload
+            name="file"
+            action="http://localhost:8300/homenews/file"
+            :show-file-list="false"
+            :file-list="fileUrl"
+            :on-success="handleFileSuccess">
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -99,6 +134,29 @@
             name="is_leader">
           </el-switch>
         </el-form-item>
+      <el-form-item label="上传照片">
+        <br>
+        <el-upload
+          name="img"
+          class="avatar-uploader"
+          action="http://localhost:8300/homenews/image"
+          :show-file-list="false"
+          :on-success="handleAvatarSuccess">
+          <img v-if="imageUrl" :src="imageUrl" class="avatar">
+          <img v-else class="el-icon-plus avatar-uploader-icon">
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="上传文件">
+        <br>
+        <el-upload
+          name="file"
+          action="http://localhost:8300/homenews/file"
+          :show-file-list="false"
+          :file-list="fileUrl"
+          :on-success="handleFileSuccess">
+          <el-button size="small" type="primary">点击上传</el-button>
+        </el-upload>
+      </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -113,14 +171,16 @@ export default {
   name: 'HomeNews',
   data () {
     return {
+      fileUrl: '',
+      imageUrl: '',
       searchContent: '',
       pageCnt: 0,
       tbData: [],
       editDialog: {
-        id: '', name: ''
+        id: '', name: '', photo: '', url: ''
       },
       addDialog: {
-        name: '', isShow: true
+        name: '', isShow: true, photo: '', url: ''
       },
       addDialogFormVisible: false,
       editDialogFormVisible: false
@@ -213,9 +273,32 @@ export default {
           }
         })
       }
+    },
+    handleAvatarSuccess (res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+      const { code } = res
+      if (code === 200) {
+        this.$message.success('上传成功')
+      } else {
+        this.$message.error('上传失败，请重新上传')
+      }
+      const { data: url } = res
+      this.addDialog.photo = url
+      this.editDialog.photo = url
+    },
+    handleFileSuccess (res, file) {
+      this.imageUrl = URL.createObjectURL(file.raw)
+      const { code } = res
+      if (code === 200) {
+        this.$message.success('上传成功')
+      } else {
+        this.$message.error('上传失败，请重新上传')
+      }
+      const { data: url } = res
+      this.addDialog.url = url
+      this.editDialog.url = url
     }
   }
-
 }
 </script>
 
@@ -239,5 +322,29 @@ export default {
 
 .box-card {
   margin-top: 1.2%;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 178px;
+  height: 178px;
+  line-height: 178px;
+  text-align: center;
+}
+.avatar {
+  width: 178px;
+  height: 178px;
+  display: block;
 }
 </style>

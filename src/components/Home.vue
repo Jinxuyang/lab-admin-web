@@ -7,10 +7,10 @@
             default-active="2"
             class="el-menu-vertical-demo"
             :router="true">
-            <el-menu-item index="/dashboard">
+            <!--<el-menu-item index="/dashboard">
               <i class="el-icon-s-data"></i>
               <span slot="title">DashBoard</span>
-            </el-menu-item>
+            </el-menu-item>-->
             <el-menu-item index="/member">
               <i class="el-icon-user"></i>
               <span slot="title">成员管理</span>

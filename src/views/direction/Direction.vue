@@ -62,6 +62,9 @@
                   @click="showEditDialog(scope.$index, scope.row)">编辑</el-button>
                 <el-button
                   size="mini"
+                  @click="showPhotoListDialog(scope.$index, scope.row)">查看图片</el-button>
+                <el-button
+                  size="mini"
                   type="danger"
                   @click="handleDelete(scope.$index, scope.row)">删除</el-button>
               </template>
@@ -80,7 +83,7 @@
       </div>
     </el-card>
     <!--修改信息Dialog-->
-    <el-dialog title="修改成员信息" :visible.sync="editDialogFormVisible">
+    <el-dialog title="修改方向信息" :visible.sync="editDialogFormVisible">
       <el-form :model="editDialog">
         <el-form-item label="ID" >
           <el-input  v-model="editDialog.id" :disabled="true"></el-input>
@@ -91,6 +94,42 @@
         <el-form-item label="介绍" >
           <el-input  v-model="editDialog.introduction" type="textarea"></el-input>
         </el-form-item>
+        <el-form-item label="图片">
+          <br>
+          <el-image
+            :key="photo"
+            :randValue="randValue"
+            v-for="photo in editDialog.photos"
+            :src="photo"
+            :preview-src-list="editDialog.photos"
+            style="width: 100px; height: 100px;margin-right: 2px">
+          </el-image>
+          <br>
+          <el-button
+            size="mini"
+            type="danger"
+            style="width: 99px"
+            v-for="photo in editDialog.photos"
+            :key="photo"
+            @click="deletePhoto(photo)">
+            删除
+          </el-button>
+        </el-form-item>
+        <el-form-item label="上传图片">
+          <br>
+          <el-upload
+            ref="upload"
+            name="img"
+            action="http://localhost:8300/direction/insert/photo"
+            :on-success="handleSuccess"
+            :on-error="handleError"
+            :file-list="fileList"
+            :auto-upload="false">
+            <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+            <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload();editDialog.photos = urlList">上传到服务器</el-button>
+            <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+          </el-upload>
+        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
@@ -98,7 +137,7 @@
       </div>
     </el-dialog>
     <!--添加成员Dialog-->
-    <el-dialog title="添加项目" :visible.sync="addDialogFormVisible">
+    <el-dialog title="添加方向" :visible.sync="addDialogFormVisible">
       <el-form :model="addDialog" ref="insertFormRef">
         <el-form-item label="姓名" >
           <el-input  v-model="addDialog.name"></el-input>
@@ -134,6 +173,18 @@
         <el-button type="primary" @click="handlerAdd(addDialog, fileList)">确 定</el-button>
       </div>
     </el-dialog>
+    <!--查看图片Dialog-->
+    <el-dialog title="查看图片" :visible.sync="showPhotoDialogVisible">
+      <div>
+        <el-image
+          :key="photo"
+          v-for="photo in showPhotoList"
+          :src="photo"
+          :preview-src-list="showPhotoList"
+          style="width: 100px; height: 100px;margin-right: 2px">
+        </el-image>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -142,19 +193,22 @@ export default {
   name: 'Direction',
   data () {
     return {
+      randValue: '123',
+      showPhotoList: [],
       urlList: [],
       fileList: [],
       searchContent: '',
       pageCnt: 0,
       tbData: [],
       editDialog: {
-        id: '', name: '', introduction: ''
+        id: '', name: '', introduction: '', photos: []
       },
       addDialog: {
         name: '', introduction: '', isShow: true, photos: []
       },
       addDialogFormVisible: false,
-      editDialogFormVisible: false
+      editDialogFormVisible: false,
+      showPhotoDialogVisible: false
     }
   },
   created () {
@@ -165,10 +219,11 @@ export default {
       this.getTbList(searchContent)
     },
     showEditDialog (index, row) {
+      this.urlList = []
       console.log(this.fileList)
       this.editDialogFormVisible = !this.editDialogFormVisible
-      if (this.isUploadSuccess) this.fileList = []
       this.editDialog = row
+      console.log(row)
     },
     handleDelete (index, row) {
       this.$http.delete('/direction/' + row.id).then(res => {
@@ -255,12 +310,32 @@ export default {
       this.$message.success('上传成功')
       this.urlList.push(response.data)
       this.addDialog.photos = this.urlList
-      console.log(this.urlList)
-      console.log(this.addDialog)
+      this.editDialog.photos = this.urlList
+    },
+    showPhotoListDialog (index, row) {
+      this.showPhotoDialogVisible = !this.showPhotoDialogVisible
+      this.showPhotoList = row.photos
+      console.log(this.showPhotoList)
     },
     handleError (err) {
       this.$message.success('上传失败')
       console.log(err)
+    },
+    deletePhoto (photo) {
+      this.$http.delete('/direction/photo?url=' + photo).then(res => {
+        if (res.data.code === 200) {
+          this.$message.success('删除成功')
+          const index = this.editDialog.photos.indexOf(photo)
+          this.editDialog.photos[index] = ''
+          this.randValue = photo
+        } else {
+          this.$message.error('删除失败')
+        }
+        console.log(res)
+      }).catch(res => {
+        this.$message.error('删除失败')
+        console.log(res)
+      })
     }
   }
 }

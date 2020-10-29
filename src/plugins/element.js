@@ -24,7 +24,10 @@ import {
   Option,
   Select,
   Pagination,
-  Upload
+  Upload,
+  Image,
+  Popconfirm,
+  Popover
 } from 'element-ui'
 
 Vue.use(Input)
@@ -53,3 +56,6 @@ Vue.use(Select)
 Vue.use(Option)
 Vue.use(Pagination)
 Vue.use(Upload)
+Vue.use(Image)
+Vue.use(Popconfirm)
+Vue.use(Popover)

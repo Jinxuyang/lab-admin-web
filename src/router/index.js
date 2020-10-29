@@ -2,7 +2,7 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Login from '@/views/login/Login'
 import Home from '@/components/Home'
-import DashBoard from '@/views/dashborad/DashBoard'
+// import DashBoard from '@/views/dashborad/DashBoard'
 import Member from '@/views/member/Member'
 import Project from '@/views/project/Project'
 import Direction from '@/views/direction/Direction'
@@ -20,7 +20,7 @@ const routes = [
     redirect: '/dashboard',
     component: Home,
     children: [
-      { path: '/dashboard', name: 'DashBoard', component: DashBoard },
+      // { path: '/dashboard', name: 'DashBoard', component: DashBoard },
       { path: '/member', name: 'Member', component: Member },
       { path: '/project', name: 'Project', component: Project },
       { path: '/direction', name: 'Direction', component: Direction },
