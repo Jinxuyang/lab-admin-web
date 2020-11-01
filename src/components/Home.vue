@@ -5,7 +5,6 @@
         <el-aside width="200px">
           <el-menu
             default-active="2"
-            class="el-menu-vertical-demo"
             :router="true">
             <!--<el-menu-item index="/dashboard">
               <i class="el-icon-s-data"></i>

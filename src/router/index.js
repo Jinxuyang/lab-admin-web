@@ -17,7 +17,7 @@ const routes = [
   {
     path: '/home',
     name: 'Home',
-    redirect: '/dashboard',
+    redirect: '/member',
     component: Home,
     children: [
       // { path: '/dashboard', name: 'DashBoard', component: DashBoard },
@@ -31,6 +31,7 @@ const routes = [
 ]
 
 const router = new VueRouter({
+  model: 'hash',
   routes
 })
 

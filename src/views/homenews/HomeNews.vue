@@ -96,7 +96,7 @@
           <el-upload
             name="img"
             class="avatar-uploader"
-            action="http://localhost:8300/homenews/image"
+            action="http://47.93.200.138:8300/homenews/image"
             :show-file-list="false"
             :on-success="handleAvatarSuccess">
             <img v-if="imageUrl" :src="imageUrl" class="avatar">
@@ -107,7 +107,7 @@
           <br>
           <el-upload
             name="file"
-            action="http://localhost:8300/homenews/file"
+            action="http://47.93.200.138:8300/homenews/file"
             :show-file-list="false"
             :file-list="fileUrl"
             :on-success="handleFileSuccess">
@@ -139,7 +139,7 @@
         <el-upload
           name="img"
           class="avatar-uploader"
-          action="http://localhost:8300/homenews/image"
+          action="http://47.93.200.138:8300/homenews/image"
           :show-file-list="false"
           :on-success="handleAvatarSuccess">
           <img v-if="imageUrl" :src="imageUrl" class="avatar">
@@ -150,7 +150,7 @@
         <br>
         <el-upload
           name="file"
-          action="http://localhost:8300/homenews/file"
+          action="http://47.93.200.138:8300/homenews/file"
           :show-file-list="false"
           :file-list="fileUrl"
           :on-success="handleFileSuccess">

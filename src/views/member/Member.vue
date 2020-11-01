@@ -113,7 +113,7 @@
         <br>
         <el-upload
           class="avatar-uploader"
-          action="http://localhost:8300/member/insert/photo"
+          action="http://47.93.200.138:8300/member/insert/photo"
           name="img"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"
@@ -144,7 +144,7 @@
         <br>
         <el-upload
           class="avatar-uploader"
-          action="http://localhost:8300/member/insert/photo"
+          action="http://47.93.200.138:8300/member/insert/photo"
           name="img"
           :show-file-list="false"
           :on-success="handleAvatarSuccess"

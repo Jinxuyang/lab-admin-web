@@ -41,18 +41,6 @@
               width="180">
               <template slot-scope="scope">
                 <el-switch
-                  v-model="scope.row.isShow"
-                  active-color="#13ce66"
-                  inactive-color="#ff4949"
-                  @change="tbStatusChange(scope.row)">
-                </el-switch>
-              </template>
-            </el-table-column>
-            <el-table-column
-              label="是否展示"
-              width="180">
-              <template slot-scope="scope">
-                <el-switch
                   v-model="scope.row.isShowOnHome"
                   active-color="#13ce66"
                   inactive-color="#ff4949"

@@ -120,7 +120,7 @@
           <el-upload
             ref="upload"
             name="img"
-            action="http://localhost:8300/direction/insert/photo"
+            action="http://47.93.200.138:8300/direction/insert/photo"
             :on-success="handleSuccess"
             :on-error="handleError"
             :file-list="fileList"
@@ -146,7 +146,7 @@
           <el-upload
             ref="upload"
             name="img"
-            action="http://localhost:8300/direction/insert/photo"
+            action="http://47.93.200.138:8300/direction/insert/photo"
             :on-success="handleSuccess"
             :on-error="handleError"
             :file-list="fileList"
